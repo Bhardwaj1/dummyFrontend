@@ -2,9 +2,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function CreateUser() {
-  const [formData, setFormData] = useState({ name: "", email: "", age: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    username: "",
+    phone: "",
+    password: "",
+  });
   const [message, setMessage] = useState("");
-    const navigate=useNavigate();
+  const navigate = useNavigate();
+
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -16,13 +23,25 @@ export default function CreateUser() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+
+      const data = await res.json();
+
       if (res.ok) {
-        navigate("/users")
         setMessage("✅ User created successfully!");
-        setFormData({ name: "", email: "", age: "" });
-      } else setMessage("❌ Failed to create user.");
+        setFormData({
+          name: "",
+          email: "",
+          username: "",
+          phone: "",
+          password: "",
+        });
+        navigate("/users"); // optional navigation
+      } else {
+        setMessage(`❌ ${data.error || "Failed to create user."}`);
+      }
     } catch (err) {
       setMessage("⚠️ Something went wrong.");
+      console.log(err);
     }
   };
 
@@ -49,10 +68,28 @@ export default function CreateUser() {
           className="w-full px-3 py-2 border rounded-md focus:ring focus:ring-blue-200"
         />
         <input
-          type="number"
-          name="age"
-          placeholder="Age"
-          value={formData.age}
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={formData.username}
+          onChange={handleChange}
+          required
+          className="w-full px-3 py-2 border rounded-md focus:ring focus:ring-blue-200"
+        />
+        <input
+          type="text"
+          name="phone"
+          placeholder="Phone Number"
+          value={formData.phone}
+          onChange={handleChange}
+          required
+          className="w-full px-3 py-2 border rounded-md focus:ring focus:ring-blue-200"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
           onChange={handleChange}
           required
           className="w-full px-3 py-2 border rounded-md focus:ring focus:ring-blue-200"
