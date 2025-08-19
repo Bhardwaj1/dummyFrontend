@@ -5,6 +5,7 @@ import DataTable from "../components/Table/DataTable";
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
   // fetch all users
@@ -12,7 +13,7 @@ export default function Users() {
     fetch("/api/users")
       .then((res) => res.json())
       .then((data) => {
-        setUsers(data);
+        setUsers(data.users || data);
         setLoading(false);
       })
       .catch((err) => {
@@ -46,13 +47,22 @@ export default function Users() {
   const columns = [
     { key: "name", label: "Name" },
     { key: "email", label: "Email" },
-    { key: "age", label: "Age" },
+    { key: "username", label: "Username" },
+    { key: "phone", label: "Phone" },
+    { key: "role", label: "Role" },
   ];
 
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">Users</h1>
-      <DataTable columns={columns} data={users} onDelete={handleDelete} onEdit={handleEdit} />
+      <DataTable
+        columns={columns}
+        data={users}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }

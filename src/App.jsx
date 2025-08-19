@@ -3,6 +3,7 @@ import CreateUser from "./pages/CreateUser.jsx";
 import Users from "./pages/Users.jsx";
 import UpdateUser from "./pages/UpdateUser.jsx";
 import ExcelUpload from "./pages/UploadBulkUser/UploadBulkUser.jsx";
+import LoginPage from "./pages/auth/Login.jsx";
 
 function Layout() {
   return (
@@ -79,7 +80,8 @@ const router = createBrowserRouter([
       { path: "/users", element: <Users /> },
       { path: "/create-user", element: <CreateUser /> },
       {path:"/update-user",element:<UpdateUser/>},
-      {path:'/upload-excel',element:<ExcelUpload/>}
+      {path:'/upload-excel',element:<ExcelUpload/>},
+      {path:'/login',element:<LoginPage/>}
     ],
   },
 ]);
