@@ -1,100 +1,77 @@
 import { useState } from "react";
-import { FcGoogle } from "react-icons/fc";
+import axios from "axios";
 
-export default function LoginPage() {
-  const [formData, setFormData] = useState({
-    identifier: "",
-    password: "",
-  });
+export default function Login() {
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Login with:", formData);
-    // Call backend API here
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        identifier,
+        password,
+      });
+      alert("Login successful!");
+      console.log(res.data);
+    } catch (err) {
+      alert(err.response.data.msg);
+    }
   };
 
   const handleGoogleLogin = () => {
-    console.log("Login with Google");
-    // Redirect to backend Google OAuth route
+    window.location.href = "http://localhost:5000/api/auth/google";
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Welcome Back 👋
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Username / Email / Phone */}
-          <div>
-            <label className="block text-gray-700 mb-1 text-sm font-medium">
-              Username / Email / Phone
-            </label>
-            <input
-              type="text"
-              name="identifier"
-              value={formData.identifier}
-              onChange={handleChange}
-              placeholder="Enter your username, email or phone"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              required
-            />
-          </div>
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-96">
+        <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
 
-          {/* Password */}
-          <div>
-            <label className="block text-gray-700 mb-1 text-sm font-medium">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              required
-            />
-          </div>
+        <input
+          type="text"
+          placeholder="Email / Username / Phone"
+          className="w-full p-2 mb-3 border rounded-lg"
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
+        />
 
-          {/* Login Button */}
+        <div className="relative mb-3">
+          <input
+            type={showPass ? "text" : "password"}
+            placeholder="Password"
+            className="w-full p-2 border rounded-lg"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <button
-            type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300"
+            type="button"
+            className="absolute right-2 top-2 text-sm"
+            onClick={() => setShowPass(!showPass)}
           >
-            Login
+            {showPass ? "🙈" : "👁️"}
           </button>
-        </form>
-
-        {/* Divider */}
-        <div className="flex items-center my-6">
-          <hr className="flex-grow border-gray-300" />
-          <span className="px-3 text-gray-500 text-sm">or</span>
-          <hr className="flex-grow border-gray-300" />
         </div>
 
-        {/* Google Login */}
         <button
-          onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition duration-300"
+          onClick={handleLogin}
+          className="w-full bg-blue-500 text-white p-2 rounded-lg mb-3"
         >
-          <FcGoogle size={24} />
-          <span className="font-medium text-gray-700">
-            Continue with Google
-          </span>
+          Login
         </button>
 
-        {/* Footer */}
-        <p className="text-center text-sm text-gray-500 mt-6">
-          Don’t have an account?{" "}
-          <a href="/register" className="text-indigo-600 hover:underline">
-            Sign up
-          </a>
-        </p>
+        <a
+          href="http://localhost:5000/api/auth/google"
+          onClick={handleGoogleLogin}
+          className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg px-4 py-2 text-gray-700 font-medium shadow-sm hover:bg-gray-50 transition"
+        >
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google logo"
+            className="w-5 h-5"
+          />
+          <span>Login with Google</span>
+        </a>
       </div>
     </div>
   );
